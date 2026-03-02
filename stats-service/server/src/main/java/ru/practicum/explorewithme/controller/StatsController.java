@@ -23,9 +23,9 @@ public class StatsController {
     }
 
     @GetMapping("/stats")
-    public List<StatDto> get(@RequestParam(name = "from")
+    public List<StatDto> get(@RequestParam(name = "start")
                              @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss") LocalDateTime from,
-                             @RequestParam(name = "to")
+                             @RequestParam(name = "end")
                              @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss") LocalDateTime to,
                              @RequestParam(name = "uris", required = false) List<String> uris,
                              @RequestParam(name = "unique", defaultValue = "false") boolean unique) {
