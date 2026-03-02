@@ -69,8 +69,8 @@ public class StatsControllerTest {
         mock.perform(
                         get("/stats")
                                 .param("uris", "/get", "/getAll")
-                                .param("from", now.toString())
-                                .param("to", now.toString()))
+                                .param("start", now.toString())
+                                .param("end", now.toString()))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.size()")
                         .value(response.size()));

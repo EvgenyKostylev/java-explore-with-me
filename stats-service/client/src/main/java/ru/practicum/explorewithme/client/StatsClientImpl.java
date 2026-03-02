@@ -31,8 +31,8 @@ public class StatsClientImpl implements StatsClient {
     public List<StatDto> get(LocalDateTime from, LocalDateTime to, List<String> uris, Boolean unique) {
         UriComponentsBuilder builder = UriComponentsBuilder
                 .fromHttpUrl(statsServerUrl + "/stats")
-                .queryParam("from", formatter.format(from))
-                .queryParam("to", formatter.format(to));
+                .queryParam("start", formatter.format(from))
+                .queryParam("end", formatter.format(to));
 
         if (uris != null && !uris.isEmpty()) {
             builder.queryParam("uris", uris);
