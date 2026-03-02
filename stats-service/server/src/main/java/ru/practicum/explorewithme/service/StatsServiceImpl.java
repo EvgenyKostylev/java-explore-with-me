@@ -14,7 +14,7 @@ import java.util.List;
 @Service
 @RequiredArgsConstructor
 @Slf4j
-public class HitServiceImpl implements HitService {
+public class StatsServiceImpl implements StatsService {
     private final HitRepository repository;
 
     private static final LocalDateTime MIN_DATE_TIME =

@@ -8,7 +8,7 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.web.servlet.MockMvc;
 import ru.practicum.explorewithme.HitDto;
 import ru.practicum.explorewithme.StatDto;
-import ru.practicum.explorewithme.service.HitServiceImpl;
+import ru.practicum.explorewithme.service.StatsServiceImpl;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -20,13 +20,13 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@WebMvcTest(HitController.class)
-public class HitControllerTest {
+@WebMvcTest(StatsController.class)
+public class StatsControllerTest {
     @Autowired
     private MockMvc mock;
 
     @MockBean
-    private HitServiceImpl service;
+    private StatsServiceImpl service;
 
     @Autowired
     private ObjectMapper mapper;

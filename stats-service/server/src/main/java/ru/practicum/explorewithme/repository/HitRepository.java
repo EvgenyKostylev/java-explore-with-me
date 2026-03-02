@@ -12,10 +12,10 @@ import java.util.List;
 public interface HitRepository extends JpaRepository<Hit, Long> {
     @Query("""
                     SELECT new ru.practicum.explorewithme.StatDto(
-                    h.appName, 
-                    h.uri, 
+                    h.appName,
+                    h.uri,
                     COUNT(h)
-                    ) 
+                    )
                     FROM Hit h
                     WHERE (h.timestamp >= :from)
                     AND (h.timestamp <= :to)
@@ -30,10 +30,10 @@ public interface HitRepository extends JpaRepository<Hit, Long> {
 
     @Query("""
                     SELECT new ru.practicum.explorewithme.StatDto(
-                    h.appName, 
-                    h.uri, 
+                    h.appName,
+                    h.uri,
                     COUNT(DISTINCT h.ip)
-                    ) 
+                    )
                     FROM Hit h
                     WHERE (h.timestamp >= :from)
                     AND (h.timestamp <= :to)

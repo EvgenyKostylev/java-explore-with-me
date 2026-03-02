@@ -1,0 +1,172 @@
+{
+  "info": {
+    "_postman_id": "8ea39c5b-0b92-4549-8da8-33775d2460be",
+    "name": "Sprint 17 ExploreWithMe (stat_svc)",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "_exporter_id": "48628861",
+    "_collection_link": "https://go.postman.co/collection/48628861-8ea39c5b-0b92-4549-8da8-33775d2460be?source=collection_link"
+  },
+  "item": [
+    {
+      "name": "stats-service",
+      "item": [
+        {
+          "name": "stats",
+          "item": [
+            {
+              "name": "Create hit",
+              "event": [
+                {
+                  "listen": "prerequest",
+                  "script": {
+                    "exec": [
+                      "function currentTimestamp() {\r",
+                      "    const now = new Date();\r",
+                      "    const pad = n => n.toString().padStart(2, '0');\r",
+                      "\r",
+                      "    return now.getFullYear() + '-' +\r",
+                      "        pad(now.getMonth() + 1) + '-' +\r",
+                      "        pad(now.getDate()) + ' ' +\r",
+                      "        pad(now.getHours()) + ':' +\r",
+                      "        pad(now.getMinutes()) + ':' +\r",
+                      "        pad(now.getSeconds());\r",
+                      "}\r",
+                      "\r",
+                      "pm.collectionVariables.set(\"app\", \"ewm-main-service\");\r",
+                      "pm.collectionVariables.set(\"uris\", \"/events/1\");\r",
+                      "pm.collectionVariables.set(\"ip\", \"192.168.0.1\");\r",
+                      "pm.collectionVariables.set(\"timestamp\", currentTimestamp());"
+                    ],
+                    "type": "text/javascript",
+                    "packages": {},
+                    "requests": {}
+                  }
+                },
+                {
+                  "listen": "test",
+                  "script": {
+                    "exec": [
+                      "pm.test(\"Status code is 201\", function () {\r",
+                      "    pm.response.to.have.status(201);\r",
+                      "});"
+                    ],
+                    "type": "text/javascript",
+                    "packages": {},
+                    "requests": {}
+                  }
+                }
+              ],
+              "request": {
+                "method": "POST",
+                "header": [],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\r\n  \"app\": \"{{app}}\",\r\n  \"uri\": \"{{uri}}\",\r\n  \"ip\": \"{{ip}}\",\r\n  \"timestamp\": \"{{timestamp}}\"\r\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "localhost:9090/hit",
+                  "host": [
+                    "localhost"
+                  ],
+                  "port": "9090",
+                  "path": [
+                    "hit"
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "Get stats",
+              "event": [
+                {
+                  "listen": "prerequest",
+                  "script": {
+                    "exec": [
+                      "pm.collectionVariables.set(\"uris\", \"/events/1\");"
+                    ],
+                    "type": "text/javascript",
+                    "packages": {},
+                    "requests": {}
+                  }
+                },
+                {
+                  "listen": "test",
+                  "script": {
+                    "exec": [
+                      "pm.test(\"Status code is 200\", function () {\r",
+                      "    pm.response.to.have.status(200);\r",
+                      "});\r",
+                      "\r",
+                      "const jsonData = pm.response.json();\r",
+                      "\r",
+                      "pm.test(\"Response is not empty\", function () {\r",
+                      "    pm.expect(jsonData.length).to.be.above(0);\r",
+                      "});\r",
+                      "\r",
+                      "pm.test(\"Hits > 0\", function () {\r",
+                      "    pm.expect(jsonData[0].hits).to.be.above(0);\r",
+                      "});"
+                    ],
+                    "type": "text/javascript",
+                    "packages": {},
+                    "requests": {}
+                  }
+                }
+              ],
+              "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "localhost:9090/stats?uris={{uris}}",
+                  "host": [
+                    "localhost"
+                  ],
+                  "port": "9090",
+                  "path": [
+                    "stats"
+                  ],
+                  "query": [
+                    {
+                      "key": "uris",
+                      "value": "{{uris}}",
+                      "type": "text"
+                    }
+                  ]
+                }
+              },
+              "response": []
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "variable": [
+    {
+      "key": "app",
+      "value": ""
+    },
+    {
+      "key": "uri",
+      "value": ""
+    },
+    {
+      "key": "ip",
+      "value": ""
+    },
+    {
+      "key": "timestamp",
+      "value": ""
+    },
+    {
+      "key": "uris",
+      "value": ""
+    }
+  ]
+}

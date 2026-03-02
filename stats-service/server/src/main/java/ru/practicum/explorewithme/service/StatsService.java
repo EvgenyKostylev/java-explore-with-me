@@ -6,7 +6,7 @@ import ru.practicum.explorewithme.StatDto;
 import java.time.LocalDateTime;
 import java.util.List;
 
-public interface HitService {
+public interface StatsService {
     void save(HitDto hit);
 
     List<StatDto> get(LocalDateTime from, LocalDateTime to, List<String> uris, boolean unique);

@@ -6,15 +6,15 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import ru.practicum.explorewithme.HitDto;
 import ru.practicum.explorewithme.StatDto;
-import ru.practicum.explorewithme.service.HitService;
+import ru.practicum.explorewithme.service.StatsService;
 
 import java.time.LocalDateTime;
 import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
-public class HitController {
-    private final HitService service;
+public class StatsController {
+    private final StatsService service;
 
     @PostMapping("/hit")
     @ResponseStatus(HttpStatus.CREATED)

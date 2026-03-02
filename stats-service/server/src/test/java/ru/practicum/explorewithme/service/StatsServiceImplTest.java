@@ -22,9 +22,9 @@ import static org.junit.jupiter.api.Assertions.*;
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 @AutoConfigureTestDatabase
 @Transactional
-public class HitServiceImplTest {
+public class StatsServiceImplTest {
     @Autowired
-    private HitService service;
+    private StatsService service;
 
     @Autowired
     private HitRepository repository;
