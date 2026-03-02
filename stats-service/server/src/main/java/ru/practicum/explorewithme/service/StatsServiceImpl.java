@@ -17,9 +17,6 @@ import java.util.List;
 public class StatsServiceImpl implements StatsService {
     private final HitRepository repository;
 
-    private static final LocalDateTime MIN_DATE_TIME =
-            LocalDateTime.of(1970, 1, 1, 0, 0, 0);
-
     @Override
     public void save(HitDto hit) {
         repository.save(HitMapper.toHit(hit));
@@ -29,21 +26,11 @@ public class StatsServiceImpl implements StatsService {
 
     @Override
     public List<StatDto> get(LocalDateTime from, LocalDateTime to, List<String> uris, boolean unique) {
-        List<StatDto> statsDto;
-
-        if (from == null) {
-            from = MIN_DATE_TIME;
+        if (uris != null && uris.isEmpty()) {
+            uris = null;
         }
 
-        if (to == null) {
-            to = LocalDateTime.now();
-        }
-
-        if (unique) {
-            statsDto = repository.findStatsByTimestampAndUrisUnique(from, to, uris);
-        } else {
-            statsDto = repository.findStatsByTimestampAndUris(from, to, uris);
-        }
+        List<StatDto> statsDto = repository.findStats(from, to, uris, unique);
 
         log.info("get statsDto: {}", statsDto);
 

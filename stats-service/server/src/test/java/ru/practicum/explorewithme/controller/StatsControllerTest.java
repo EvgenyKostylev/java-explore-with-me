@@ -52,6 +52,7 @@ public class StatsControllerTest {
 
     @Test
     public void statsGetWhereUriGetAndGetAll() throws Exception {
+        LocalDateTime now = LocalDateTime.now();
         List<StatDto> response = List.of(StatDto.builder()
                         .appName("name")
                         .uri("/get")
@@ -63,11 +64,13 @@ public class StatsControllerTest {
                         .hitCount(2)
                         .build());
 
-        when(service.get(null, null, List.of("/get", "/getAll"), false)).thenReturn(response);
+        when(service.get(now, now, List.of("/get", "/getAll"), false)).thenReturn(response);
 
         mock.perform(
                         get("/stats")
-                                .param("uris", "/get", "/getAll"))
+                                .param("uris", "/get", "/getAll")
+                                .param("from", now.toString())
+                                .param("to", now.toString()))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.size()")
                         .value(response.size()));

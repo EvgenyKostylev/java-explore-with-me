@@ -14,37 +14,21 @@ public interface HitRepository extends JpaRepository<Hit, Long> {
                     SELECT new ru.practicum.explorewithme.StatDto(
                     h.appName,
                     h.uri,
-                    COUNT(h)
+                    CASE
+                        WHEN :unique = true THEN COUNT(DISTINCT h.ip)
+                        ELSE COUNT(h)
+                    END
                     )
                     FROM Hit h
-                    WHERE (h.timestamp >= :from)
-                    AND (h.timestamp <= :to)
-                    AND (h.uri IN :uris)
+                    WHERE h.timestamp BETWEEN :from AND :to
+                    AND (:uris IS NULL OR h.uri IN :uris)
                     GROUP BY h.appName, h.uri
-                    ORDER BY COUNT(h) DESC
+                    ORDER BY 3 DESC
             """)
-    List<StatDto> findStatsByTimestampAndUris(
+    List<StatDto> findStats(
             @Param("from") LocalDateTime from,
             @Param("to") LocalDateTime to,
-            @Param("uris") List<String> uris
-    );
-
-    @Query("""
-                    SELECT new ru.practicum.explorewithme.StatDto(
-                    h.appName,
-                    h.uri,
-                    COUNT(DISTINCT h.ip)
-                    )
-                    FROM Hit h
-                    WHERE (h.timestamp >= :from)
-                    AND (h.timestamp <= :to)
-                    AND (h.uri IN :uris)
-                    GROUP BY h.appName, h.uri
-                    ORDER BY COUNT(h) DESC
-            """)
-    List<StatDto> findStatsByTimestampAndUrisUnique(
-            @Param("from") LocalDateTime from,
-            @Param("to") LocalDateTime to,
-            @Param("uris") List<String> uris
+            @Param("uris") List<String> uris,
+            @Param("unique") boolean unique
     );
 }

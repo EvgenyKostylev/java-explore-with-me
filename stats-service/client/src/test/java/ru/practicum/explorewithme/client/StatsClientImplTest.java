@@ -40,6 +40,7 @@ public class StatsClientImplTest {
 
     @Test
     public void getRequestGetStats() {
+        LocalDateTime now = LocalDateTime.now();
         RestTemplate rest = mock(RestTemplate.class);
 
         StatsClientImpl client =
@@ -61,7 +62,7 @@ public class StatsClientImplTest {
         )).thenReturn(response);
 
         List<StatDto> result = client.get(
-                null, null,
+                now.minusHours(1), now.plusHours(1),
                 List.of("/uri"),
                 false
         );

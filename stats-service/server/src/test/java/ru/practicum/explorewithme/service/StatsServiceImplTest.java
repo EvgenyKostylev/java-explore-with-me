@@ -59,16 +59,17 @@ public class StatsServiceImplTest {
 
     @Test
     public void getStats() {
+        LocalDateTime now = LocalDateTime.now();
         HitDto hitDto = HitDto.builder()
                 .appName("name")
                 .uri("uri")
                 .ip("ip")
-                .timestamp(LocalDateTime.now())
+                .timestamp(now)
                 .build();
 
         service.save(hitDto);
 
-        List<StatDto> stats = service.get(null, null, List.of("uri"), false);
+        List<StatDto> stats = service.get(now.minusHours(1), now.plusHours(1), List.of("uri"), false);
 
         assertNotNull(stats);
         assertEquals(1, stats.size());
@@ -77,11 +78,12 @@ public class StatsServiceImplTest {
 
     @Test
     public void getStatWithUniqueTrue() {
+        LocalDateTime now = LocalDateTime.now();
         HitDto firstHitDto = HitDto.builder()
                 .appName("name")
                 .uri("uri")
                 .ip("ip")
-                .timestamp(LocalDateTime.now())
+                .timestamp(now)
                 .build();
 
         service.save(firstHitDto);
@@ -89,12 +91,12 @@ public class StatsServiceImplTest {
         HitDto secondHitDto = HitDto.builder()
                 .appName("name")
                 .uri("uri").ip("ip")
-                .timestamp(LocalDateTime.now())
+                .timestamp(now)
                 .build();
 
         service.save(secondHitDto);
 
-        List<StatDto> stats = service.get(null, null, List.of("uri"), true);
+        List<StatDto> stats = service.get(now.minusHours(1), now.plusHours(1), List.of("uri"), true);
 
         assertNotNull(stats);
         assertEquals(1, stats.size());
