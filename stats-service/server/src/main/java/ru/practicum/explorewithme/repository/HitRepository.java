@@ -21,6 +21,7 @@ public interface HitRepository extends JpaRepository<Hit, Long> {
                     AND (h.timestamp <= :to)
                     AND (h.uri IN :uris)
                     GROUP BY h.appName, h.uri
+                    ORDER BY COUNT(h) DESC
             """)
     List<StatDto> findStatsByTimestampAndUris(
             @Param("from") LocalDateTime from,
@@ -39,6 +40,7 @@ public interface HitRepository extends JpaRepository<Hit, Long> {
                     AND (h.timestamp <= :to)
                     AND (h.uri IN :uris)
                     GROUP BY h.appName, h.uri
+                    ORDER BY COUNT(h) DESC
             """)
     List<StatDto> findStatsByTimestampAndUrisUnique(
             @Param("from") LocalDateTime from,
