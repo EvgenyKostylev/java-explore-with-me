@@ -37,8 +37,7 @@ public class StatsControllerTest {
                 .appName("name")
                 .uri("uri")
                 .ip("ip")
-                .timestamp(LocalDateTime.now())
-                .build();
+                .timestamp(LocalDateTime.now()).build();
 
         doNothing().when(service).save(any(HitDto.class));
 
@@ -56,13 +55,11 @@ public class StatsControllerTest {
         List<StatDto> response = List.of(StatDto.builder()
                         .appName("name")
                         .uri("/get")
-                        .hitCount(1L)
-                        .build(),
+                        .hitCount(1L).build(),
                 StatDto.builder()
                         .appName("name")
                         .uri("/getAll")
-                        .hitCount(2L)
-                        .build());
+                        .hitCount(2L).build());
 
         when(service.get(now, now, List.of("/get", "/getAll"), false)).thenReturn(response);
 

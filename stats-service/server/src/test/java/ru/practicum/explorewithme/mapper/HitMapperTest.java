@@ -19,8 +19,7 @@ public class HitMapperTest {
                 .appName("name")
                 .uri("uri")
                 .ip("ip")
-                .timestamp(now)
-                .build();
+                .timestamp(now).build();
         Hit hit = mapper.toHit(hitDto);
 
         assertEquals(hitDto.getAppName(), hit.getAppName());

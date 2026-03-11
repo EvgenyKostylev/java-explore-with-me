@@ -108,4 +108,18 @@ public class ErrorHandler {
 
         return error;
     }
+
+    @ExceptionHandler(Throwable.class)
+    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
+    public ApiError handleThrowable(Throwable ex) {
+        ApiError error = ApiError.builder()
+                .status(HttpStatus.INTERNAL_SERVER_ERROR)
+                .reason("Error occurred.")
+                .message(ex.getMessage())
+                .timestamp(LocalDateTime.now()).build();
+
+        log.warn(error.toString());
+
+        return error;
+    }
 }

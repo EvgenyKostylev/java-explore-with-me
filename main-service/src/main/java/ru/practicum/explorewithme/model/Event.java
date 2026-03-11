@@ -44,7 +44,7 @@ public class Event {
     @Column
     private LocalDateTime eventDate;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinColumn(name = "location_id")
     @ToString.Exclude
     private Location location;
