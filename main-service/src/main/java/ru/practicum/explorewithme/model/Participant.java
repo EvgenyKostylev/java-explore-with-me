@@ -20,18 +20,18 @@ public class Participant {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
-    @Column
+    @Column(nullable = false)
     private LocalDateTime created;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "event_id")
+    @JoinColumn(name = "event_id", nullable = false)
     private Event event;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "requestor_id")
+    @JoinColumn(name = "requestor_id", nullable = false)
     private User requestor;
 
     @Enumerated(EnumType.STRING)
-    @Column
+    @Column(nullable = false, length = 20)
     private Status status;
 }

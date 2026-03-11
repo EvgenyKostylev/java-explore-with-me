@@ -19,9 +19,9 @@ public class Location {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
-    @Column
+    @Column(nullable = false, precision = 9, scale = 6)
     private BigDecimal lat;
 
-    @Column
+    @Column(nullable = false, precision = 9, scale = 6)
     private BigDecimal lon;
 }

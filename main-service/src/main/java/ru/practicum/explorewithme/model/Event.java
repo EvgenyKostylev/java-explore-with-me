@@ -22,7 +22,7 @@ public class Event {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
-    @Column
+    @Column(nullable = false, length = 2000)
     private String annotation;
 
     @ManyToOne(fetch = FetchType.LAZY)
@@ -33,7 +33,7 @@ public class Event {
     @Column
     private LocalDateTime createdOn;
 
-    @Column
+    @Column(nullable = false, length = 7000)
     private String description;
 
     @ManyToOne(fetch = FetchType.LAZY)
@@ -62,10 +62,10 @@ public class Event {
     private Boolean requestModeration;
 
     @Enumerated(EnumType.STRING)
-    @Column
+    @Column(nullable = false, length = 20)
     private State state;
 
-    @Column
+    @Column(nullable = false, length = 120)
     private String title;
 
     @ManyToMany(mappedBy = "events", fetch = FetchType.LAZY)

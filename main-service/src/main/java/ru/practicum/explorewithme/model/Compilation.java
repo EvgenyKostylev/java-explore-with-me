@@ -20,10 +20,10 @@ public class Compilation {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
-    @Column
+    @Column(nullable = false)
     private Boolean pinned;
 
-    @Column
+    @Column(nullable = false, length = 50)
     private String title;
 
     @ManyToMany(fetch = FetchType.LAZY)
