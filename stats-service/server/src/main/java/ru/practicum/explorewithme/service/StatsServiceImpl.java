@@ -16,10 +16,11 @@ import java.util.List;
 @Slf4j
 public class StatsServiceImpl implements StatsService {
     private final HitRepository repository;
+    private final HitMapper mapper;
 
     @Override
     public void save(HitDto hit) {
-        repository.save(HitMapper.toHit(hit));
+        repository.save(mapper.toHit(hit));
 
         log.info("save hit: {}", hit);
     }
@@ -30,7 +31,13 @@ public class StatsServiceImpl implements StatsService {
             uris = null;
         }
 
-        List<StatDto> statsDto = repository.findStats(from, to, uris, unique);
+        List<StatDto> statsDto;
+
+        if (unique) {
+            statsDto = repository.findUniqueStats(from, to, uris);
+        } else {
+            statsDto = repository.findStats(from, to, uris);
+        }
 
         log.info("get statsDto: {}", statsDto);
 

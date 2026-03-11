@@ -13,7 +13,7 @@ public class StatDtoTest {
         StatDto statDto = StatDto.builder()
                 .appName("name")
                 .uri("uri")
-                .hitCount(1)
+                .hitCount(1L)
                 .build();
 
         String json = mapper.writeValueAsString(statDto);

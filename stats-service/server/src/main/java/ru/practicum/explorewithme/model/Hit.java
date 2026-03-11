@@ -17,7 +17,7 @@ import java.time.LocalDateTime;
 public class Hit {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long id;
+    private Integer id;
 
     @Column(name = "app_name")
     private String appName;
