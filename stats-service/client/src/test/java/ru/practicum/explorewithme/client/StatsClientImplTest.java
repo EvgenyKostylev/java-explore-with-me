@@ -9,6 +9,7 @@ import org.springframework.web.client.RestTemplate;
 import ru.practicum.explorewithme.HitDto;
 import ru.practicum.explorewithme.StatDto;
 
+import java.net.URI;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -55,7 +56,7 @@ public class StatsClientImplTest {
                 ResponseEntity.ok(stats);
 
         when(rest.exchange(
-                anyString(),
+                any(URI.class),
                 eq(HttpMethod.GET),
                 isNull(),
                 ArgumentMatchers.<ParameterizedTypeReference<List<StatDto>>>any()

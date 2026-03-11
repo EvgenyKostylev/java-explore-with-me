@@ -41,7 +41,9 @@ public class StatsClientImpl implements StatsClient {
         }
 
         if (uris != null && !uris.isEmpty()) {
-            builder.queryParam("uris", uris);
+            for (String uri : uris) {
+                builder.queryParam("uris", uri);
+            }
         }
 
         if (unique != null) {
@@ -49,7 +51,7 @@ public class StatsClientImpl implements StatsClient {
         }
 
         ResponseEntity<List<StatDto>> response = rest.exchange(
-                builder.toUriString(),
+                builder.build().toUri(),
                 HttpMethod.GET,
                 null,
                 new ParameterizedTypeReference<>() {

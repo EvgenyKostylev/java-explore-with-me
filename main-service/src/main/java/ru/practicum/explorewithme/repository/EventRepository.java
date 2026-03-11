@@ -36,10 +36,10 @@ public interface EventRepository extends JpaRepository<Event, Integer> {
             SELECT e
             FROM Event e
             WHERE (
-                        :text IS NULL
-                                    OR LOWER(e.annotation) LIKE LOWER(CONCAT('%', :text, '%'))
-                                                OR LOWER(e.description) LIKE LOWER(CONCAT('%', :text, '%'))
-                                                            )
+                CAST(:text AS string) IS NULL\s
+                OR LOWER(e.annotation) LIKE LOWER(CONCAT('%', :text, '%'))
+                OR LOWER(e.description) LIKE LOWER(CONCAT('%', :text, '%'))
+            )
             AND (:categories IS NULL OR e.category.id IN :categories)
             AND (:paid IS NULL OR e.paid = :paid)
             AND (e.eventDate >= COALESCE(:rangeStart, CURRENT_TIMESTAMP))
@@ -68,10 +68,10 @@ public interface EventRepository extends JpaRepository<Event, Integer> {
             FROM Event e
             WHERE e.state = ru.practicum.explorewithme.model.State.PUBLISHED
             AND (
-                        :text IS NULL
-                                    OR LOWER(e.annotation) LIKE LOWER(CONCAT('%', :text, '%'))
-                                                OR LOWER(e.description) LIKE LOWER(CONCAT('%', :text, '%'))
-                                                            )
+                    CAST(:text AS string) IS NULL\s
+                    OR LOWER(e.annotation) LIKE LOWER(CONCAT('%', :text, '%'))
+                    OR LOWER(e.description) LIKE LOWER(CONCAT('%', :text, '%'))
+                )
             AND (:categories IS NULL OR e.category.id IN :categories)
             AND (:paid IS NULL OR e.paid = :paid)
             AND (e.eventDate >= COALESCE(:rangeStart, CURRENT_TIMESTAMP))
