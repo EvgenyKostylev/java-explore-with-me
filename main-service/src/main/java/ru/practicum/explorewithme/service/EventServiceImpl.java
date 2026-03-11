@@ -326,7 +326,7 @@ public class EventServiceImpl implements EventService {
 
         return statsDto.stream().collect(Collectors.toMap(
                 stats -> Integer.parseInt(stats.getUri().split("/")[2]),
-                stats -> (int) stats.getHitCount()
+                stats -> stats.getHitCount().intValue()
         ));
     }
 

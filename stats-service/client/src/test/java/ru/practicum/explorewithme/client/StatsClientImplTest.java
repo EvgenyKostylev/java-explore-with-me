@@ -49,7 +49,7 @@ public class StatsClientImplTest {
                 StatDto.builder()
                         .appName("name")
                         .uri("uri")
-                        .hitCount(1)
+                        .hitCount(1L)
                         .build());
         ResponseEntity<List<StatDto>> response =
                 ResponseEntity.ok(stats);

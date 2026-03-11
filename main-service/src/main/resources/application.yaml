@@ -13,4 +13,4 @@ spring:
     hibernate:
       ddl-auto: update
 stats-server:
-  url: http://stats-server:9090
+  url: ${SERVICES_STATSSERVICE_URI:http://localhost:9090}

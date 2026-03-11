@@ -17,5 +17,5 @@ public class StatDto {
     private String uri;
 
     @JsonProperty("hits")
-    private long hitCount;
+    private Long hitCount;
 }
