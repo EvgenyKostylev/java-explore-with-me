@@ -5,6 +5,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import ru.practicum.explorewithme.HitDto;
 import ru.practicum.explorewithme.StatDto;
+import ru.practicum.explorewithme.exception.BadRequestException;
 import ru.practicum.explorewithme.mapper.HitMapper;
 import ru.practicum.explorewithme.model.Hit;
 import ru.practicum.explorewithme.repository.HitRepository;
@@ -30,6 +31,10 @@ public class StatsServiceImpl implements StatsService {
     public List<StatDto> get(LocalDateTime from, LocalDateTime to, List<String> uris, boolean unique) {
         if (uris != null && uris.isEmpty()) {
             uris = null;
+        }
+
+        if (from != null && to != null && from.isAfter(to)) {
+            throw new BadRequestException("Start date must be before end date");
         }
 
         List<StatDto> statsDto;
