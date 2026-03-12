@@ -1,8 +1,11 @@
 package ru.practicum.explorewithme.controller;
 
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.validation.constraints.Positive;
+import jakarta.validation.constraints.PositiveOrZero;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.web.bind.annotation.*;
 import ru.practicum.explorewithme.HitDto;
 import ru.practicum.explorewithme.client.StatsClient;
@@ -36,10 +39,12 @@ public class EventController {
                                                  required = false) Boolean paid,
                                          @RequestParam(
                                                  name = "rangeStart",
-                                                 required = false) LocalDateTime rangeStart,
+                                                 required = false)
+                                         @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss") LocalDateTime rangeStart,
                                          @RequestParam(
                                                  name = "rangeEnd",
-                                                 required = false) LocalDateTime rangeEnd,
+                                                 required = false)
+                                         @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss") LocalDateTime rangeEnd,
                                          @RequestParam(
                                                  name = "onlyAvailable",
                                                  defaultValue = "false") boolean onlyAvailable,
@@ -48,10 +53,10 @@ public class EventController {
                                                  required = false) Sort sort,
                                          @RequestParam(
                                                  name = "from",
-                                                 defaultValue = "0") int from,
+                                                 defaultValue = "0") @PositiveOrZero int from,
                                          @RequestParam(
                                                  name = "size",
-                                                 defaultValue = "10") int size, HttpServletRequest request) {
+                                                 defaultValue = "10") @Positive int size, HttpServletRequest request) {
         statsClient.save(HitDto.builder()
                 .appName(appName)
                 .uri(request.getRequestURI())

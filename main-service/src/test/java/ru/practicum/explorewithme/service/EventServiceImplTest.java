@@ -11,6 +11,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import ru.practicum.explorewithme.client.StatsClient;
 import ru.practicum.explorewithme.dto.*;
+import ru.practicum.explorewithme.expection.BadRequestException;
 import ru.practicum.explorewithme.expection.ForbiddenException;
 import ru.practicum.explorewithme.expection.NotFoundException;
 import ru.practicum.explorewithme.model.*;
@@ -150,7 +151,7 @@ public class EventServiceImplTest {
         newEventDto.setRequestModeration(false);
         newEventDto.setTitle("title");
 
-        assertThrows(ForbiddenException.class, () -> service.saveEvent(user.getId(), newEventDto));
+        assertThrows(BadRequestException.class, () -> service.saveEvent(user.getId(), newEventDto));
     }
 
     @Test
@@ -277,7 +278,7 @@ public class EventServiceImplTest {
         updateEventUserRequest.setStateAction(StateActionUser.SEND_TO_REVIEW);
         updateEventUserRequest.setEventDate(LocalDateTime.now());
 
-        assertThrows(ForbiddenException.class, () -> service.updateEvent(
+        assertThrows(BadRequestException.class, () -> service.updateEvent(
                 user.getId(),
                 eventId,
                 updateEventUserRequest));
@@ -306,7 +307,7 @@ public class EventServiceImplTest {
         updateEventUserRequest.setAnnotation("newAnnotation");
         updateEventUserRequest.setStateAction(StateActionUser.SEND_TO_REVIEW);
 
-        assertThrows(ForbiddenException.class, () -> service.updateEvent(
+        assertThrows(BadRequestException.class, () -> service.updateEvent(
                 user.getId(),
                 eventId,
                 updateEventUserRequest));
@@ -363,7 +364,7 @@ public class EventServiceImplTest {
         UpdateEventAdminRequest updateEventAdminRequest = new UpdateEventAdminRequest();
 
         updateEventAdminRequest.setAnnotation("newAnnotation");
-        updateEventAdminRequest.setStateActionAdmin(StateActionAdmin.PUBLISH_EVENT);
+        updateEventAdminRequest.setStateAction(StateActionAdmin.PUBLISH_EVENT);
 
         EventFullDto eventFullDto = service.updateEvent(event.getId(), updateEventAdminRequest);
 
@@ -392,7 +393,7 @@ public class EventServiceImplTest {
         UpdateEventAdminRequest updateEventAdminRequest = new UpdateEventAdminRequest();
 
         updateEventAdminRequest.setAnnotation("newAnnotation");
-        updateEventAdminRequest.setStateActionAdmin(StateActionAdmin.PUBLISH_EVENT);
+        updateEventAdminRequest.setStateAction(StateActionAdmin.PUBLISH_EVENT);
         assertThrows(ForbiddenException.class, () -> service.updateEvent(eventId, updateEventAdminRequest));
     }
 
@@ -417,7 +418,7 @@ public class EventServiceImplTest {
         UpdateEventAdminRequest updateEventAdminRequest = new UpdateEventAdminRequest();
 
         updateEventAdminRequest.setAnnotation("newAnnotation");
-        updateEventAdminRequest.setStateActionAdmin(StateActionAdmin.PUBLISH_EVENT);
+        updateEventAdminRequest.setStateAction(StateActionAdmin.PUBLISH_EVENT);
         assertThrows(ForbiddenException.class, () -> service.updateEvent(eventId, updateEventAdminRequest));
     }
 
@@ -442,7 +443,7 @@ public class EventServiceImplTest {
         UpdateEventAdminRequest updateEventAdminRequest = new UpdateEventAdminRequest();
 
         updateEventAdminRequest.setAnnotation("newAnnotation");
-        updateEventAdminRequest.setStateActionAdmin(StateActionAdmin.REJECT_EVENT);
+        updateEventAdminRequest.setStateAction(StateActionAdmin.REJECT_EVENT);
         assertThrows(ForbiddenException.class, () -> service.updateEvent(eventId, updateEventAdminRequest));
     }
 

@@ -169,7 +169,7 @@ public class ParticipantServiceImpl implements ParticipantService {
                 "Request with id=%d was not found",
                 requestId)));
 
-        participant.setStatus(Status.REJECTED);
+        participant.setStatus(Status.CANCELED);
 
         log.info("Participant request with id={} has been rejected", requestId);
 

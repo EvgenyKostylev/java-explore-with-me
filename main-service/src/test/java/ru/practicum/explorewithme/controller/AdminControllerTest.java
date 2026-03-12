@@ -113,13 +113,13 @@ public class AdminControllerTest {
         NewUserRequest request = new NewUserRequest();
 
         request.setName("name");
-        request.setEmail("userEmail");
+        request.setEmail("usermail@mail.com");
 
         UserDto response = new UserDto();
 
         response.setId(1);
         response.setName("name");
-        response.setEmail("userEmail");
+        response.setEmail("usermail@mail.com");
 
         when(userService.saveUser(any(NewUserRequest.class))).thenReturn(response);
 

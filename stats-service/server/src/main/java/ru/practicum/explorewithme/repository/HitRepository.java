@@ -11,12 +11,12 @@ import java.util.List;
 
 public interface HitRepository extends JpaRepository<Hit, Integer> {
     @Query("""
-                    SELECT new ru.practicum.explorewithme.StatDto(h.appName, h.uri, COUNT(h))
+                    SELECT new ru.practicum.explorewithme.StatDto(h.appName, h.uri, COUNT(h.ip))
                     FROM Hit h
                     WHERE h.timestamp BETWEEN :from AND :to
                     AND (:uris IS NULL OR h.uri IN :uris)
                     GROUP BY h.appName, h.uri
-                    ORDER BY 3 DESC
+                    ORDER BY COUNT(h.ip)
             """)
     List<StatDto> findStats(
             @Param("from") LocalDateTime from,
@@ -25,12 +25,12 @@ public interface HitRepository extends JpaRepository<Hit, Integer> {
     );
 
     @Query("""
-                    SELECT new ru.practicum.explorewithme.StatDto(h.appName, h.uri, COUNT(DISTINCT h.id))
+                    SELECT new ru.practicum.explorewithme.StatDto(h.appName, h.uri, COUNT(DISTINCT h.ip))
                     FROM Hit h
                     WHERE h.timestamp BETWEEN :from AND :to
                     AND (:uris IS NULL OR h.uri IN :uris)
                     GROUP BY h.appName, h.uri
-                    ORDER BY 3 DESC
+                    ORDER BY COUNT(h.ip)
             """)
     List<StatDto> findUniqueStats(
             @Param("from") LocalDateTime from,

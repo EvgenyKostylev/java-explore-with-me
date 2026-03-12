@@ -312,6 +312,6 @@ public class ParticipantServiceImplTest {
 
         assertEquals(user.getId(), request.getRequester());
         assertEquals(event.getId(), request.getEvent());
-        assertEquals(Status.REJECTED, request.getStatus());
+        assertEquals(Status.CANCELED, request.getStatus());
     }
 }

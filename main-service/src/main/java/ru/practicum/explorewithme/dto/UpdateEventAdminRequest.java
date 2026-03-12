@@ -30,7 +30,7 @@ public class UpdateEventAdminRequest {
 
     private Boolean requestModeration;
 
-    private StateActionAdmin stateActionAdmin;
+    private StateActionAdmin stateAction;
 
     @Size(min = 3, max = 120)
     private String title;

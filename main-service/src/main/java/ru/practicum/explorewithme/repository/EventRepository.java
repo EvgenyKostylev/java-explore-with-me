@@ -21,8 +21,8 @@ public interface EventRepository extends JpaRepository<Event, Integer> {
             WHERE (:users IS NULL OR e.initiator.id IN :users)
             AND (:states IS NULL OR e.state IN :states)
             AND (:categories IS NULL OR e.category.id IN :categories)
-            AND (:rangeStart IS NULL OR e.eventDate >= :rangeStart)
-            AND (:rangeEnd IS NULL OR e.eventDate <= :rangeEnd)
+            AND (e.eventDate >= :rangeStart)
+            AND (e.eventDate <= :rangeEnd)
             """)
     List<Event> findEvents(
             @Param("users") List<Integer> users,
@@ -35,15 +35,15 @@ public interface EventRepository extends JpaRepository<Event, Integer> {
     @Query("""
             SELECT e
             FROM Event e
-            WHERE (
-                CAST(:text AS string) IS NULL\s
-                OR LOWER(e.annotation) LIKE LOWER(CONCAT('%', :text, '%'))
-                OR LOWER(e.description) LIKE LOWER(CONCAT('%', :text, '%'))
-            )
+            WHERE e.state = ru.practicum.explorewithme.model.State.PUBLISHED
+            AND (
+                        :text IS NULL
+                                    OR LOWER(e.annotation) LIKE LOWER(:text) OR LOWER(e.description) LIKE LOWER(:text)
+                                                            )
             AND (:categories IS NULL OR e.category.id IN :categories)
             AND (:paid IS NULL OR e.paid = :paid)
-            AND (e.eventDate >= COALESCE(:rangeStart, CURRENT_TIMESTAMP))
-            AND (:rangeEnd IS NULL OR e.eventDate <= :rangeEnd)
+            AND e.eventDate >= :rangeStart
+            AND (e.eventDate <= :rangeEnd)
             AND (
             :onlyAvailable = false OR e.participantLimit = 0
             OR (
@@ -68,14 +68,13 @@ public interface EventRepository extends JpaRepository<Event, Integer> {
             FROM Event e
             WHERE e.state = ru.practicum.explorewithme.model.State.PUBLISHED
             AND (
-                    CAST(:text AS string) IS NULL\s
-                    OR LOWER(e.annotation) LIKE LOWER(CONCAT('%', :text, '%'))
-                    OR LOWER(e.description) LIKE LOWER(CONCAT('%', :text, '%'))
-                )
+                        :text IS NULL
+                                    OR LOWER(e.annotation) LIKE LOWER(:text) OR LOWER(e.description) LIKE LOWER(:text)
+                                                            )
             AND (:categories IS NULL OR e.category.id IN :categories)
             AND (:paid IS NULL OR e.paid = :paid)
-            AND (e.eventDate >= COALESCE(:rangeStart, CURRENT_TIMESTAMP))
-            AND (:rangeEnd IS NULL OR e.eventDate <= :rangeEnd)
+            AND e.eventDate >= :rangeStart
+            AND (e.eventDate <= :rangeEnd)
             AND (
             :onlyAvailable = false OR e.participantLimit = 0
             OR (

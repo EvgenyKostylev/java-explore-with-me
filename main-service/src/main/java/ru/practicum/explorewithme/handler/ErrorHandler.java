@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 import ru.practicum.explorewithme.dto.ApiError;
+import ru.practicum.explorewithme.expection.BadRequestException;
 import ru.practicum.explorewithme.expection.ConflictException;
 import ru.practicum.explorewithme.expection.ForbiddenException;
 import ru.practicum.explorewithme.expection.NotFoundException;
@@ -117,6 +118,20 @@ public class ErrorHandler {
         ApiError error = ApiError.builder()
                 .status(HttpStatus.FORBIDDEN)
                 .reason("For the requested operation the conditions are not met.")
+                .message(ex.getMessage())
+                .timestamp(LocalDateTime.now()).build();
+
+        log.warn(error.toString());
+
+        return error;
+    }
+
+    @ExceptionHandler(BadRequestException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public ApiError handleBadRequestException(BadRequestException ex) {
+        ApiError error = ApiError.builder()
+                .status(HttpStatus.BAD_REQUEST)
+                .reason("Incorrectly made request.")
                 .message(ex.getMessage())
                 .timestamp(LocalDateTime.now()).build();
 

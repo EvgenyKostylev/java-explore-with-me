@@ -6,6 +6,7 @@ import org.springframework.stereotype.Service;
 import ru.practicum.explorewithme.HitDto;
 import ru.practicum.explorewithme.StatDto;
 import ru.practicum.explorewithme.mapper.HitMapper;
+import ru.practicum.explorewithme.model.Hit;
 import ru.practicum.explorewithme.repository.HitRepository;
 
 import java.time.LocalDateTime;
@@ -20,9 +21,9 @@ public class StatsServiceImpl implements StatsService {
 
     @Override
     public void save(HitDto hit) {
-        repository.save(mapper.toHit(hit));
+        Hit newHit = repository.save(mapper.toHit(hit));
 
-        log.info("save hit: {}", hit);
+        log.info("save hit: {}", newHit);
     }
 
     @Override
