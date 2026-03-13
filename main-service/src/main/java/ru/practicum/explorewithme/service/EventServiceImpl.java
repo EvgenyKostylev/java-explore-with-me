@@ -366,18 +366,21 @@ public class EventServiceImpl implements EventService {
     }
 
     private Map<Integer, Integer> getEventViews(Integer eventId, LocalDateTime eventPublishedDate) {
-        if (eventPublishedDate == null) {
-            return Map.of(eventId, 0);
+        int views = 0;
+
+        if (eventPublishedDate != null) {
+            List<StatDto> statsDto = statsClient.get(
+                    eventPublishedDate,
+                    LocalDateTime.now(),
+                    List.of("/events/" + eventId),
+                    true);
+
+            if (statsDto != null && !statsDto.isEmpty()) {
+                views = statsDto.getFirst().getHitCount().intValue();
+            }
         }
 
-        String eventUri = String.format("event/%d", eventId);
-        StatDto statsDto = statsClient.get(
-                eventPublishedDate,
-                LocalDateTime.now(),
-                List.of(eventUri),
-                true).getFirst();
-
-        return Map.of(eventId, statsDto.getHitCount() != null ? statsDto.getHitCount().intValue() : 0);
+        return Map.of(eventId, views);
     }
 
     private Map<Integer, Integer> getEventsViewsMap(List<Integer> eventIds) {
