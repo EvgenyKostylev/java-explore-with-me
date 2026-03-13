@@ -30,7 +30,7 @@ public class Event {
     @ToString.Exclude
     private Category category;
 
-    @Column
+    @Column(nullable = false)
     private LocalDateTime createdOn;
 
     @Column(nullable = false, length = 7000)
@@ -41,7 +41,7 @@ public class Event {
     @ToString.Exclude
     private User initiator;
 
-    @Column
+    @Column(nullable = false)
     private LocalDateTime eventDate;
 
     @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
@@ -49,16 +49,16 @@ public class Event {
     @ToString.Exclude
     private Location location;
 
-    @Column
+    @Column(nullable = false)
     private Boolean paid;
 
-    @Column
+    @Column(nullable = false)
     private Integer participantLimit;
 
     @Column
     private LocalDateTime publishedOn;
 
-    @Column
+    @Column(nullable = false)
     private Boolean requestModeration;
 
     @Enumerated(EnumType.STRING)
@@ -69,5 +69,6 @@ public class Event {
     private String title;
 
     @ManyToMany(mappedBy = "events", fetch = FetchType.LAZY)
+    @ToString.Exclude
     private Set<Compilation> compilations = new HashSet<>();
 }

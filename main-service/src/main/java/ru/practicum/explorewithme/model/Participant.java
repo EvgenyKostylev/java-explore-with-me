@@ -12,7 +12,7 @@ import java.time.LocalDateTime;
 @Setter
 @Builder
 @ToString
-@EqualsAndHashCode
+@EqualsAndHashCode(exclude = {"event", "requestor"})
 @NoArgsConstructor
 @AllArgsConstructor
 public class Participant {
@@ -25,10 +25,12 @@ public class Participant {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "event_id", nullable = false)
+    @ToString.Exclude
     private Event event;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "requestor_id", nullable = false)
+    @ToString.Exclude
     private User requestor;
 
     @Enumerated(EnumType.STRING)

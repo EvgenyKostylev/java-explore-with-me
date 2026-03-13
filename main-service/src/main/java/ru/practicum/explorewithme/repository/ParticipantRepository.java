@@ -33,6 +33,14 @@ public interface ParticipantRepository extends JpaRepository<Participant, Intege
     List<Participant> findPendingParticipantsByEventId(@Param("eventId") int eventId);
 
     @Query("""
+            SELECT COUNT(p)
+            FROM Participant p
+            WHERE p.event.id = :eventId
+            AND p.status = ru.practicum.explorewithme.model.Status.CONFIRMED
+            """)
+    Long countConfirmedParticipants(@Param("eventId") Integer eventId);
+
+    @Query("""
             SELECT p.event.id, COUNT(p)
             FROM Participant p
             WHERE p.event.id IN :eventIds

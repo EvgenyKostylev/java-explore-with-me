@@ -40,20 +40,6 @@ public class EventServiceImpl implements EventService {
     private final LocationMapper locationMapper;
     private final UserService userService;
 
-    private static final LocalDateTime LOCAL_DATE_TIME_MIN = LocalDateTime.of(
-            1970,
-            1,
-            1,
-            0,
-            0);
-    private static final LocalDateTime LOCAL_DATE_TIME_MAX = LocalDateTime.of(
-            9999,
-            12,
-            31,
-            23,
-            59,
-            59);
-
     @Override
     public List<EventShortDto> getEvents(int userId, int from, int size) {
         Pageable pageable = PageRequest.of(from / size, size);
@@ -139,11 +125,11 @@ public class EventServiceImpl implements EventService {
         }
 
         if (rangeStart == null) {
-            rangeStart = LOCAL_DATE_TIME_MIN;
+            rangeStart = LocalDateTime.now().minusMonths(1);
         }
 
         if (rangeEnd == null) {
-            rangeEnd = LOCAL_DATE_TIME_MAX;
+            rangeEnd = LocalDateTime.now().plusMonths(1);
         }
 
         List<Event> events = eventRepository.findEvents(users, states, categories, rangeStart, rangeEnd, pageable);
@@ -223,7 +209,7 @@ public class EventServiceImpl implements EventService {
         rangeStart = (rangeStart != null) ? rangeStart : LocalDateTime.now();
 
         if (rangeEnd == null) {
-            rangeEnd = LOCAL_DATE_TIME_MAX;
+            rangeEnd = LocalDateTime.now().plusMonths(1);
         }
 
         if (sort == null) {
@@ -379,14 +365,37 @@ public class EventServiceImpl implements EventService {
         return event;
     }
 
+    private Map<Integer, Integer> getEventViews(Integer eventId, LocalDateTime eventPublishedDate) {
+        if (eventPublishedDate == null) {
+            return Map.of(eventId, 0);
+        }
+
+        String eventUri = String.format("event/%d", eventId);
+        StatDto statsDto = statsClient.get(
+                eventPublishedDate,
+                LocalDateTime.now(),
+                List.of(eventUri),
+                true).getFirst();
+
+        return Map.of(eventId, statsDto.getHitCount() != null ? statsDto.getHitCount().intValue() : 0);
+    }
+
     private Map<Integer, Integer> getEventsViewsMap(List<Integer> eventIds) {
         List<String> eventUris = eventIds.stream().map(id -> String.format("/events/%d", id)).toList();
-        List<StatDto> statsDto = statsClient.get(LOCAL_DATE_TIME_MIN, LOCAL_DATE_TIME_MAX, eventUris, true);
+        List<StatDto> statsDto = statsClient.get(
+                LocalDateTime.now().minusMonths(1),
+                LocalDateTime.now().plusMonths(1),
+                eventUris,
+                true);
 
         return statsDto.stream().collect(Collectors.toMap(
                 stats -> Integer.parseInt(stats.getUri().split("/")[2]),
-                stats -> (int) stats.getHitCount().intValue()
+                stats -> stats.getHitCount().intValue()
         ));
+    }
+
+    private Map<Integer, Integer> getEventParticipants(Integer eventId) {
+        return Map.of(eventId, participantRepository.countConfirmedParticipants(eventId).intValue());
     }
 
     private Map<Integer, Integer> getEventsParticipationsMap(List<Integer> eventIds) {
@@ -397,10 +406,9 @@ public class EventServiceImpl implements EventService {
     }
 
     private EventFullDto mapToEventFullDto(Event event) {
-        List<Integer> eventId = List.of(event.getId());
         EventStatsContext eventStatsContext = new EventStatsContext(
-                getEventsParticipationsMap(eventId),
-                getEventsViewsMap(eventId));
+                getEventParticipants(event.getId()),
+                getEventViews(event.getId(), event.getPublishedOn()));
 
         return eventMapper.toEventFullDto(event, eventStatsContext);
     }
