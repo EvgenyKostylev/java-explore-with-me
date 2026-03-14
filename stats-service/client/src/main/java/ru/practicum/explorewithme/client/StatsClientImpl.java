@@ -28,14 +28,22 @@ public class StatsClientImpl implements StatsClient {
     }
 
     @Override
-    public List<StatDto> get(LocalDateTime from, LocalDateTime to, List<String> uris, Boolean unique) {
+    public List<StatDto> get(LocalDateTime start, LocalDateTime end, List<String> uris, Boolean unique) {
         UriComponentsBuilder builder = UriComponentsBuilder
-                .fromHttpUrl(statsServerUrl + "/stats")
-                .queryParam("start", formatter.format(from))
-                .queryParam("end", formatter.format(to));
+                .fromHttpUrl(statsServerUrl + "/stats");
+
+        if (start != null) {
+            builder.queryParam("start", start.format(formatter));
+        }
+
+        if (end != null) {
+            builder.queryParam("end", end.format(formatter));
+        }
 
         if (uris != null && !uris.isEmpty()) {
-            builder.queryParam("uris", uris);
+            for (String uri : uris) {
+                builder.queryParam("uris", uri);
+            }
         }
 
         if (unique != null) {
@@ -43,7 +51,7 @@ public class StatsClientImpl implements StatsClient {
         }
 
         ResponseEntity<List<StatDto>> response = rest.exchange(
-                builder.toUriString(),
+                builder.build().toUri(),
                 HttpMethod.GET,
                 null,
                 new ParameterizedTypeReference<>() {

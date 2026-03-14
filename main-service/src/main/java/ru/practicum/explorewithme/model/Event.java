@@ -1,0 +1,74 @@
+package ru.practicum.explorewithme.model;
+
+import jakarta.persistence.*;
+import lombok.*;
+
+import java.time.LocalDateTime;
+import java.util.HashSet;
+import java.util.Set;
+
+@Entity
+@Table(name = "events",
+        indexes = {
+                @Index(name = "idx_events_category", columnList = "category_id"),
+                @Index(name = "idx_events_location", columnList = "location_id")
+        })
+@Getter
+@Setter
+@ToString
+@EqualsAndHashCode(exclude = {"category", "initiator", "location", "compilations"})
+public class Event {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Integer id;
+
+    @Column(nullable = false, length = 2000)
+    private String annotation;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "category_id")
+    @ToString.Exclude
+    private Category category;
+
+    @Column(nullable = false)
+    private LocalDateTime createdOn;
+
+    @Column(nullable = false, length = 7000)
+    private String description;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "initiator_id")
+    @ToString.Exclude
+    private User initiator;
+
+    @Column(nullable = false)
+    private LocalDateTime eventDate;
+
+    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @JoinColumn(name = "location_id")
+    @ToString.Exclude
+    private Location location;
+
+    @Column(nullable = false)
+    private Boolean paid;
+
+    @Column(nullable = false)
+    private Integer participantLimit;
+
+    @Column
+    private LocalDateTime publishedOn;
+
+    @Column(nullable = false)
+    private Boolean requestModeration;
+
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false, length = 20)
+    private State state;
+
+    @Column(nullable = false, length = 120)
+    private String title;
+
+    @ManyToMany(mappedBy = "events", fetch = FetchType.LAZY)
+    @ToString.Exclude
+    private Set<Compilation> compilations = new HashSet<>();
+}

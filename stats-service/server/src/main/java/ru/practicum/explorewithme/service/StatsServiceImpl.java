@@ -5,7 +5,9 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import ru.practicum.explorewithme.HitDto;
 import ru.practicum.explorewithme.StatDto;
+import ru.practicum.explorewithme.exception.BadRequestException;
 import ru.practicum.explorewithme.mapper.HitMapper;
+import ru.practicum.explorewithme.model.Hit;
 import ru.practicum.explorewithme.repository.HitRepository;
 
 import java.time.LocalDateTime;
@@ -16,12 +18,13 @@ import java.util.List;
 @Slf4j
 public class StatsServiceImpl implements StatsService {
     private final HitRepository repository;
+    private final HitMapper mapper;
 
     @Override
     public void save(HitDto hit) {
-        repository.save(HitMapper.toHit(hit));
+        Hit newHit = repository.save(mapper.toHit(hit));
 
-        log.info("save hit: {}", hit);
+        log.info("save hit: {}", newHit);
     }
 
     @Override
@@ -30,7 +33,17 @@ public class StatsServiceImpl implements StatsService {
             uris = null;
         }
 
-        List<StatDto> statsDto = repository.findStats(from, to, uris, unique);
+        if (from != null && to != null && from.isAfter(to)) {
+            throw new BadRequestException("Start date must be before end date");
+        }
+
+        List<StatDto> statsDto;
+
+        if (unique) {
+            statsDto = repository.findUniqueStats(from, to, uris);
+        } else {
+            statsDto = repository.findStats(from, to, uris);
+        }
 
         log.info("get statsDto: {}", statsDto);
 

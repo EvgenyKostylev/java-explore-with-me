@@ -45,8 +45,7 @@ public class StatsServiceImplTest {
                 .appName("name")
                 .uri("uri")
                 .ip("ip")
-                .timestamp(LocalDateTime.now())
-                .build();
+                .timestamp(LocalDateTime.now()).build();
 
         service.save(hitDto);
 
@@ -64,8 +63,7 @@ public class StatsServiceImplTest {
                 .appName("name")
                 .uri("uri")
                 .ip("ip")
-                .timestamp(now)
-                .build();
+                .timestamp(now).build();
 
         service.save(hitDto);
 
@@ -83,16 +81,14 @@ public class StatsServiceImplTest {
                 .appName("name")
                 .uri("uri")
                 .ip("ip")
-                .timestamp(now)
-                .build();
+                .timestamp(now).build();
 
         service.save(firstHitDto);
 
         HitDto secondHitDto = HitDto.builder()
                 .appName("name")
                 .uri("uri").ip("ip")
-                .timestamp(now)
-                .build();
+                .timestamp(now).build();
 
         service.save(secondHitDto);
 
