@@ -394,6 +394,15 @@
           "request": {
             "method": "PATCH",
             "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
             "url": {
               "raw": "{{baseUrl}}/users/{{userId}}/comments/{{commId}}",
               "host": [
@@ -743,6 +752,14 @@
                 "{{commId}}"
               ]
             }
+          },
+          "response": []
+        },
+        {
+          "name": "Редактирование комментария пользователем new",
+          "request": {
+            "method": "GET",
+            "header": []
           },
           "response": []
         }
