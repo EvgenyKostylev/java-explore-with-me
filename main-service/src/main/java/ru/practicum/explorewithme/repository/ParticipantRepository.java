@@ -60,4 +60,13 @@ public interface ParticipantRepository extends JpaRepository<Participant, Intege
     int countConfirmedParticipants(@Param("eventId") int eventId);
 
     Optional<Participant> findParticipantByIdAndRequestorId(int id, int requestorId);
+
+    @Query("""
+            SELECT COUNT(p) > 0
+            FROM Participant p
+            WHERE p.requestor.id = :requestorId
+            AND p.event.id = :eventId
+            AND p.status = ru.practicum.explorewithme.model.Status.CONFIRMED
+            """)
+    boolean existsByRequestorIdAndEventId(@Param("requestorId") int requestorId, @Param("eventId") int eventId);
 }

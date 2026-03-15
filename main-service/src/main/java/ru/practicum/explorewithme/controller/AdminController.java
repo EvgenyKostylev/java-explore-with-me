@@ -6,11 +6,9 @@ import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import ru.practicum.explorewithme.dto.*;
+import ru.practicum.explorewithme.model.Condition;
 import ru.practicum.explorewithme.model.State;
-import ru.practicum.explorewithme.service.CategoryService;
-import ru.practicum.explorewithme.service.CompilationService;
-import ru.practicum.explorewithme.service.EventService;
-import ru.practicum.explorewithme.service.UserService;
+import ru.practicum.explorewithme.service.*;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -23,6 +21,7 @@ public class AdminController {
     private final UserService userService;
     private final CompilationService compilationService;
     private final CategoryService categoryService;
+    private final CommentService commentService;
 
     @PostMapping("/categories")
     @ResponseStatus(HttpStatus.CREATED)
@@ -95,5 +94,25 @@ public class AdminController {
             @PathVariable int compId,
             @RequestBody @Valid UpdateCompilationRequest request) {
         return compilationService.updateCompilation(compId, request);
+    }
+
+    @GetMapping("/comments/{commId}")
+    public CommentFullDto getComment(@PathVariable int commId) {
+        return commentService.getComment(commId);
+    }
+
+    @GetMapping("/comments")
+    public List<CommentFullDto> getComments(@RequestParam(name = "users", required = false) List<Integer> users,
+                                            @RequestParam(name = "events", required = false) List<Integer> events,
+                                            @RequestParam(name = "condition", required = false) Condition condition,
+                                            @RequestParam(name = "from", defaultValue = "0") int from,
+                                            @RequestParam(name = "size", defaultValue = "10") int size) {
+        return commentService.getComments(users, events, condition, from, size);
+    }
+
+    @PatchMapping("/comments/{commId}")
+    public CommentFullDto updateCommentCondition(@PathVariable int commId,
+                                                 @RequestParam(name = "condition") Condition condition) {
+        return commentService.updateCommentCondition(commId, condition);
     }
 }

@@ -8,6 +8,7 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import ru.practicum.explorewithme.dto.*;
+import ru.practicum.explorewithme.service.CommentService;
 import ru.practicum.explorewithme.service.EventService;
 import ru.practicum.explorewithme.service.ParticipantService;
 
@@ -27,6 +28,9 @@ public class UserControllerTest {
 
     @MockBean
     private EventService eventService;
+
+    @MockBean
+    private CommentService commentService;
 
     @MockBean
     private ParticipantService participantService;
@@ -175,5 +179,60 @@ public class UserControllerTest {
         mock.perform(patch("/users/1/requests/1/cancel"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.id").value(1));
+    }
+
+    @Test
+    public void successfullyGetComments() throws Exception {
+        CommentFullDto response = new CommentFullDto();
+
+        response.setId(1);
+
+        when(commentService.getComments(eq(1), any(), anyInt(), anyInt())).thenReturn(List.of(response));
+
+        mock.perform(get("/users/1/comments"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$[0].id").value(1));
+    }
+
+    @Test
+    public void successfullySaveComment() throws Exception {
+        NewCommentDto request = new NewCommentDto();
+
+        request.setComment("comment test save");
+
+        CommentFullDto response = new CommentFullDto();
+
+        response.setId(1);
+        response.setComment("comment test save");
+
+        when(commentService.saveComment(eq(1), eq(1), any(NewCommentDto.class))).thenReturn(response);
+
+        mock.perform(post("/users/1/events/1/comments")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(request)))
+                .andExpect(status().isCreated())
+                .andExpect(jsonPath("$.id").value(1))
+                .andExpect(jsonPath("$.comment").value("comment test save"));
+    }
+
+    @Test
+    public void successfullyUpdateComment() throws Exception {
+        NewCommentDto request = new NewCommentDto();
+
+        request.setComment("comment test update");
+
+        CommentFullDto response = new CommentFullDto();
+
+        response.setId(1);
+        response.setComment("comment test update");
+
+        when(commentService.updateComment(eq(1), eq(1), any(NewCommentDto.class))).thenReturn(response);
+
+        mock.perform(patch("/users/1/comments/1")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(request)))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.id").value(1))
+                .andExpect(jsonPath("$.comment").value("comment test update"));
     }
 }

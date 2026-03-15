@@ -12,10 +12,12 @@ import ru.practicum.explorewithme.dto.*;
 import ru.practicum.explorewithme.expection.BadRequestException;
 import ru.practicum.explorewithme.expection.ForbiddenException;
 import ru.practicum.explorewithme.expection.NotFoundException;
+import ru.practicum.explorewithme.mapper.CommentMapper;
 import ru.practicum.explorewithme.mapper.EventMapper;
 import ru.practicum.explorewithme.mapper.LocationMapper;
 import ru.practicum.explorewithme.model.*;
 import ru.practicum.explorewithme.model.Location;
+import ru.practicum.explorewithme.repository.CommentRepository;
 import ru.practicum.explorewithme.repository.EventRepository;
 import ru.practicum.explorewithme.repository.LocationRepository;
 import ru.practicum.explorewithme.repository.ParticipantRepository;
@@ -34,11 +36,13 @@ public class EventServiceImpl implements EventService {
     private final EventRepository eventRepository;
     private final ParticipantRepository participantRepository;
     private final EventMapper eventMapper;
+    private final CommentMapper commentMapper;
     private final StatsClient statsClient;
     private final CategoryService categoryService;
     private final LocationRepository locationRepository;
     private final LocationMapper locationMapper;
     private final UserService userService;
+    private final CommentRepository commentRepository;
 
     @Override
     public List<EventShortDto> getEvents(int userId, int from, int size) {
@@ -408,19 +412,31 @@ public class EventServiceImpl implements EventService {
                         r -> ((Number) r[1]).intValue()));
     }
 
+    private Map<Integer, List<Comment>> getEventComments(Integer eventId) {
+        return commentRepository.findCommentsByEventIdAndCondition(eventId).stream()
+                .collect(Collectors.groupingBy(comment -> comment.getEvent().getId()));
+    }
+
+    private Map<Integer, List<Comment>> getEventsCommentsMap(List<Integer> eventIds) {
+        return commentRepository.findCommentsByEventIdsAndCondition(eventIds).stream()
+                .collect(Collectors.groupingBy(comment -> comment.getEvent().getId()));
+    }
+
     private EventFullDto mapToEventFullDto(Event event) {
         EventStatsContext eventStatsContext = new EventStatsContext(
                 getEventParticipants(event.getId()),
-                getEventViews(event.getId(), event.getPublishedOn()));
+                getEventViews(event.getId(), event.getPublishedOn()),
+                getEventComments(event.getId()));
 
-        return eventMapper.toEventFullDto(event, eventStatsContext);
+        return eventMapper.toEventFullDto(event, eventStatsContext, commentMapper);
     }
 
     private List<EventShortDto> mapToEventsShortDto(List<Event> events) {
         List<Integer> eventIds = events.stream().map(Event::getId).toList();
         EventStatsContext eventStatsContext = new EventStatsContext(
                 getEventsParticipationsMap(eventIds),
-                getEventsViewsMap(eventIds));
+                getEventsViewsMap(eventIds),
+                null);
 
         return eventMapper.toEventsShortDto(events, eventStatsContext);
     }
@@ -429,8 +445,9 @@ public class EventServiceImpl implements EventService {
         List<Integer> eventIds = events.stream().map(Event::getId).toList();
         EventStatsContext eventStatsContext = new EventStatsContext(
                 getEventsParticipationsMap(eventIds),
-                getEventsViewsMap(eventIds));
+                getEventsViewsMap(eventIds),
+                getEventsCommentsMap(eventIds));
 
-        return eventMapper.toEventsFullDto(events, eventStatsContext);
+        return eventMapper.toEventsFullDto(events, eventStatsContext, commentMapper);
     }
 }
