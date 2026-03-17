@@ -8,10 +8,8 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import ru.practicum.explorewithme.dto.*;
-import ru.practicum.explorewithme.service.CategoryService;
-import ru.practicum.explorewithme.service.CompilationService;
-import ru.practicum.explorewithme.service.EventService;
-import ru.practicum.explorewithme.service.UserService;
+import ru.practicum.explorewithme.model.Condition;
+import ru.practicum.explorewithme.service.*;
 
 import java.util.List;
 
@@ -38,6 +36,9 @@ public class AdminControllerTest {
 
     @MockBean
     private UserService userService;
+
+    @MockBean
+    private CommentService commentService;
 
     @MockBean
     private CompilationService compilationService;
@@ -215,5 +216,49 @@ public class AdminControllerTest {
                         .content(objectMapper.writeValueAsString(request)))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.id").value(1));
+    }
+
+    @Test
+    public void successfullyGetComment() throws Exception {
+        CommentFullDto response = new CommentFullDto();
+
+        response.setId(1);
+
+        when(commentService.getComment(eq(1))).thenReturn(response);
+
+        mock.perform(get("/admin/comments/1"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.id").value(1));
+    }
+
+    @Test
+    public void successfullyGetComments() throws Exception {
+        CommentFullDto response = new CommentFullDto();
+
+        response.setId(1);
+
+        when(commentService.getComments(anyList(), anyList(), any(), anyInt(), anyInt())).thenReturn(List.of(response));
+
+        mock.perform(get("/admin/comments")
+                        .param("users", "1")
+                        .param("events", "1"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$[0].id").value(1));
+    }
+
+    @Test
+    public void successfullyUpdateCommentCondition() throws Exception {
+        CommentFullDto response = new CommentFullDto();
+
+        response.setId(1);
+        response.setCondition(Condition.PUBLISHED);
+
+        when(commentService.updateCommentCondition(eq(1), any())).thenReturn(response);
+
+        mock.perform(patch("/admin/comments/1")
+                        .param("condition", "PUBLISHED"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.id").value(1))
+                .andExpect(jsonPath("$.condition").value("PUBLISHED"));
     }
 }

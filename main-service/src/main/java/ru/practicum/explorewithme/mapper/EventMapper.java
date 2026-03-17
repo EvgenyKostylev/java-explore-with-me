@@ -2,10 +2,8 @@ package ru.practicum.explorewithme.mapper;
 
 import org.mapstruct.*;
 import ru.practicum.explorewithme.dto.*;
-import ru.practicum.explorewithme.model.Category;
-import ru.practicum.explorewithme.model.Event;
+import ru.practicum.explorewithme.model.*;
 import ru.practicum.explorewithme.model.Location;
-import ru.practicum.explorewithme.model.User;
 
 import java.util.List;
 
@@ -42,6 +40,7 @@ public interface EventMapper {
     @Mapping(target = "views", ignore = true)
     List<EventShortDto> toEventsShortDto(List<Event> event, @Context EventStatsContext eventStatsContext);
 
+    @Named("toFull")
     @Mapping(
             source = "initiator",
             target = "initiator",
@@ -49,8 +48,13 @@ public interface EventMapper {
     )
     @Mapping(target = "confirmedRequests", ignore = true)
     @Mapping(target = "views", ignore = true)
-    EventFullDto toEventFullDto(Event event, @Context EventStatsContext eventStatsContext);
+    @Mapping(target = "comments", ignore = true)
+    EventFullDto toEventFullDto(
+            Event event,
+            @Context EventStatsContext eventStatsContext,
+            @Context CommentMapper commentMapper);
 
+    @IterableMapping(qualifiedByName = "toFull")
     @Mapping(
             source = "initiator",
             target = "initiator",
@@ -58,7 +62,11 @@ public interface EventMapper {
     )
     @Mapping(target = "confirmedRequests", ignore = true)
     @Mapping(target = "views", ignore = true)
-    List<EventFullDto> toEventsFullDto(List<Event> events, @Context EventStatsContext eventStatsContext);
+    @Mapping(target = "comments", ignore = true)
+    List<EventFullDto> toEventsFullDto(
+            List<Event> events,
+            @Context EventStatsContext eventStatsContext,
+            @Context CommentMapper commentMapper);
 
     @AfterMapping
     default void setAdditionalParameters(
@@ -77,13 +85,19 @@ public interface EventMapper {
     default void setAdditionalParameters(
             Event event,
             @MappingTarget EventFullDto eventFullDto,
-            @Context EventStatsContext eventStatsContext) {
+            @Context EventStatsContext eventStatsContext,
+            @Context CommentMapper commentMapper) {
         eventFullDto.setConfirmedRequests(
                 eventStatsContext.getParticipants().getOrDefault(event.getId(),
                         0));
         eventFullDto.setViews(
                 eventStatsContext.getViews().getOrDefault(event.getId(),
                         0));
+        eventFullDto.setComments(
+                commentMapper.toCommentsShortDto(eventStatsContext.getComments().getOrDefault(
+                        event.getId(),
+                        List.of()))
+        );
     }
 
     @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)

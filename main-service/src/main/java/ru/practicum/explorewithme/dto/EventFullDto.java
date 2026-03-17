@@ -8,6 +8,7 @@ import lombok.Data;
 import ru.practicum.explorewithme.model.State;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Data
 public class EventFullDto {
@@ -55,4 +56,6 @@ public class EventFullDto {
     private String title;
 
     private Integer views;
+
+    private List<CommentShortDto> comments;
 }

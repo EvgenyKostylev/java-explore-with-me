@@ -5,6 +5,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import ru.practicum.explorewithme.dto.*;
+import ru.practicum.explorewithme.service.CommentService;
 import ru.practicum.explorewithme.service.EventService;
 import ru.practicum.explorewithme.service.ParticipantService;
 
@@ -16,6 +17,7 @@ import java.util.List;
 public class UserController {
     private final EventService eventService;
     private final ParticipantService participantService;
+    private final CommentService commentService;
 
     @GetMapping("/{userId}/events")
     public List<EventShortDto> getEvents(@PathVariable int userId,
@@ -72,5 +74,30 @@ public class UserController {
     @PatchMapping("/{userId}/requests/{requestId}/cancel")
     public ParticipationRequestDto updateParticipantRequest(@PathVariable int userId, @PathVariable int requestId) {
         return participantService.updateParticipantRequest(userId, requestId);
+    }
+
+    @GetMapping("/{userId}/comments")
+    public List<CommentFullDto> getComments(@PathVariable int userId,
+                                            @RequestParam(name = "events", required = false) List<Integer> events,
+                                            @RequestParam(name = "from", defaultValue = "0") int from,
+                                            @RequestParam(name = "size", defaultValue = "10") int size) {
+        return commentService.getComments(userId, events, from, size);
+    }
+
+    @PostMapping("/{userId}/events/{eventId}/comments")
+    @ResponseStatus(HttpStatus.CREATED)
+    public CommentFullDto saveComment(
+            @PathVariable int userId,
+            @PathVariable int eventId,
+            @RequestBody @Valid NewCommentDto request) {
+        return commentService.saveComment(userId, eventId, request);
+    }
+
+    @PatchMapping("/{userId}/comments/{commId}")
+    public CommentFullDto updateComment(
+            @PathVariable int userId,
+            @PathVariable int commId,
+            @RequestBody @Valid NewCommentDto request) {
+        return commentService.updateComment(userId, commId, request);
     }
 }
